@@ -79,6 +79,7 @@ func (self *Anticaptcha) getClient() *http.Client {
 	return self.Client
 }
 
+// load captcha to anti-captcha and wait until service resolve captcha and return answer
 func (self *Anticaptcha) ResolveCaptcha(captcha []byte, isBase64 bool, opts *Options) (string, error) {
 	captchaId, err := self.LoadCaptcha(captcha, isBase64, opts)
 	if err != nil {
@@ -131,6 +132,15 @@ func (self *Anticaptcha) ResolveBytes(captcha []byte, opts *Options) (string, er
 
 func (self *Anticaptcha) ResolveReader(r io.Reader, opts *Options) (string, error) {
 	data, err := ioutil.ReadAll(r)
+	if err != nil {
+		return "", err
+	}
+
+	return self.ResolveBytes(data, opts)
+}
+
+func (self *Anticaptcha) ResolveFile(f string, opts *Options) (string, error) {
+	data, err := ioutil.ReadFile(f)
 	if err != nil {
 		return "", err
 	}
@@ -206,6 +216,7 @@ func (self *Anticaptcha) writeOptions(data *multipart.Writer, opts *Options) err
 	return nil
 }
 
+// load captcha to anti-captcha and return captchaId or error
 func (self *Anticaptcha) LoadCaptcha(captcha []byte, isBase64 bool, opts *Options) (string, error) {
 	reqbody := &bytes.Buffer{}
 	formwriter := multipart.NewWriter(reqbody)
@@ -285,6 +296,16 @@ func (self *Anticaptcha) LoadReader(r io.Reader, opts *Options) (string, error) 
 	return self.LoadBytes(data, opts)
 }
 
+func (self *Anticaptcha) LoadFile(f string, opts *Options) (string, error) {
+	data, err := ioutil.ReadFile(f)
+	if err != nil {
+		return "", err
+	}
+
+	return self.LoadBytes(data, opts)
+}
+
+// get answer by captchaId
 func (self *Anticaptcha) GetAnswer(captchaId string) (string, error) {
 	resp, err := self.getClient().Get("http://anti-captcha.com/res.php?key=" + self.Key + "&action=get&id=" + captchaId)
 	if err != nil {
@@ -301,6 +322,29 @@ func (self *Anticaptcha) GetAnswer(captchaId string) (string, error) {
 	}
 
 	return parseOkResponse(respbody)
+}
+
+func (self *Anticaptcha) GetCaptchaInfo(captchaId string) ([]byte, error) {
+	resp, err := self.getClient().Get("http://anti-captcha.com/api/tools/getCaptchaInfo?key=" + self.Key + "&id=" + captchaId)
+	if err != nil {
+		return nil, err
+	}
+
+	return ioutil.ReadAll(resp.Body)
+}
+
+func (self *Anticaptcha) GetBalance() (float64, error) {
+	resp, err := self.getClient().Get("http://anti-captcha.com/res.php?key=" + self.Key + "&action=getbalance")
+	if err != nil {
+		return 0, err
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return 0, err
+	}
+
+	return strconv.ParseFloat(string(data), 64)
 }
 
 func parseOkResponse(resp string) (string, error) {
