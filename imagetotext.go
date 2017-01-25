@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"time"
-	"fmt"
 )
 
 const NumericNoNumbers = 1
@@ -45,8 +44,6 @@ func (self *ImageToTextResolver) Resolve(captcha []byte, opts *ImageToTextTask) 
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("taskId", taskId)
 
 	answerch := make(chan *ImageToTextResult)
 	errch := make(chan error)
@@ -144,8 +141,6 @@ func (self *ImageToTextResolver) TaskResult(taskId int) (*ImageToTextResult, err
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("response:", string(respbody))
 
 	var respdata struct {
 		ImageToTextResult
