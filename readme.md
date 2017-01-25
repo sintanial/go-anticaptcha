@@ -8,8 +8,8 @@ Install
 
 Docs 
 -----
-```https://godoc.org/github.com/sintanial/go-anticaptcha```
 
+```https://godoc.org/github.com/sintanial/go-anticaptcha```
 
 Usage 
 -----
