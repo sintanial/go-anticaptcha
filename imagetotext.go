@@ -2,10 +2,11 @@ package anticaptcha
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"io/ioutil"
 	"time"
+	"io"
+	"encoding/base64"
 )
 
 const NumericNoNumbers = 1
@@ -30,6 +31,7 @@ type ImageToTextResolver struct {
 	Settings
 }
 
+// captcha - base64 image
 func (self *ImageToTextResolver) Solution(captcha []byte, opts *ImageToTextTask) (string, error) {
 	res, err := self.Resolve(captcha, opts)
 	if err != nil {
@@ -39,6 +41,29 @@ func (self *ImageToTextResolver) Solution(captcha []byte, opts *ImageToTextTask)
 	return res.Solution.Text, nil
 }
 
+func (self *ImageToTextResolver) ResolveReader(r io.Reader, opts *ImageToTextTask) (*ImageToTextResult, error) {
+	data, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+
+	return self.ResolveBytes(data, opts)
+}
+
+func (self *ImageToTextResolver) ResolveFile(f string, opts *ImageToTextTask) (*ImageToTextResult, error) {
+	data, err := ioutil.ReadFile(f)
+	if err != nil {
+		return nil, err
+	}
+
+	return self.ResolveBytes(data, opts)
+}
+
+func (self *ImageToTextResolver) ResolveBytes(b []byte, opts *ImageToTextTask) (*ImageToTextResult, error) {
+	return self.Resolve([]byte(base64.StdEncoding.EncodeToString(b)), opts)
+}
+
+// captcha - base64 image
 func (self *ImageToTextResolver) Resolve(captcha []byte, opts *ImageToTextTask) (*ImageToTextResult, error) {
 	taskId, err := self.CreateTask(captcha, opts)
 	if err != nil {
@@ -83,6 +108,7 @@ func (self *ImageToTextResolver) Resolve(captcha []byte, opts *ImageToTextTask) 
 	}
 }
 
+// captcha - base64 image
 func (self *ImageToTextResolver) CreateTask(captcha []byte, opts *ImageToTextTask) (int, error) {
 	task := struct {
 		ImageToTextTask `json:"-"`
@@ -91,7 +117,7 @@ func (self *ImageToTextResolver) CreateTask(captcha []byte, opts *ImageToTextTas
 		Body string `json:"body"`
 	}{
 		Type: "ImageToTextTask",
-		Body: base64.StdEncoding.EncodeToString(captcha),
+		Body: string(captcha),
 	}
 
 	if opts != nil {
