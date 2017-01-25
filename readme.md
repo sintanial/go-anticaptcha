@@ -1,6 +1,6 @@
 Anticaptcha Api
 
-Usage
+Usage 
 -----
 
 ```golang
@@ -17,3 +17,5 @@ Usage
 
     fmt.Println(res)
 ```
+
+More docs can find in source code ;)
