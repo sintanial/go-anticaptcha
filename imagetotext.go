@@ -31,6 +31,33 @@ type ImageToTextResolver struct {
 	Settings
 }
 
+func (self *ImageToTextResolver) SolutionReader(r io.Reader, opts *ImageToTextTask) (string, error) {
+	res, err := self.ResolveReader(r, opts)
+	if err != nil {
+		return "", err
+	}
+
+	return res.Solution.Text, nil
+}
+
+func (self *ImageToTextResolver) SolutionBytes(b []byte, opts *ImageToTextTask) (string, error) {
+	res, err := self.ResolveBytes(b, opts)
+	if err != nil {
+		return "", err
+	}
+
+	return res.Solution.Text, nil
+}
+
+func (self *ImageToTextResolver) SolutionFile(f string, opts *ImageToTextTask) (string, error) {
+	res, err := self.ResolveFile(f, opts)
+	if err != nil {
+		return "", err
+	}
+
+	return res.Solution.Text, nil
+}
+
 // captcha - base64 image
 func (self *ImageToTextResolver) Solution(captcha []byte, opts *ImageToTextTask) (string, error) {
 	res, err := self.Resolve(captcha, opts)
