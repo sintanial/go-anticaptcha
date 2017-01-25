@@ -1,5 +1,14 @@
 Anticaptcha Api
 
+Install
+_____
+
+```go get github.com/sintanial/go-anticaptcha ```
+
+Docs
+_____
+```https://godoc.org/github.com/sintanial/go-anticaptcha```
+
 Usage 
 -----
 
