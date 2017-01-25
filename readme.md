@@ -4,12 +4,16 @@ Usage
 -----
 
 ```golang
-    ac := New("YOUR API KEY HERE")
+    ac := anticaptcha.New("YOUR API KEY")
+    data, err := ioutil.ReadFile("./captcha.jpeg")
+    if err != nil {
+        panic(err)
+    }
 
-	answer, err := ac.ResolveBytes([]byte("IMAGE BINARY DATA")), nil)
-	if err != nil {
-		panic(err)
-	}
-	
-	fmt.Println(answer)
+    res, err := ac.ImageToTextResolver().Solution(data, nil)
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Println(res)
 ```

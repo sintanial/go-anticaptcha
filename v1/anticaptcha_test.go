@@ -1,9 +1,9 @@
-package anticaptcha
+package v1anticaptcha
 
 import (
-	"testing"
-	"io/ioutil"
 	"encoding/base64"
+	"io/ioutil"
+	"testing"
 )
 
 var TEST_KEY = ""
@@ -11,7 +11,7 @@ var TEST_KEY = ""
 func TestAnticaptcha_ResolveBytes(t *testing.T) {
 	ac := New(TEST_KEY)
 
-	data, err := ioutil.ReadFile("./testdata/captcha.jpeg")
+	data, err := ioutil.ReadFile("./../testdata/captcha.jpeg")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -29,7 +29,7 @@ func TestAnticaptcha_ResolveBytes(t *testing.T) {
 func TestAnticaptcha_ResolveBase64(t *testing.T) {
 	ac := New(TEST_KEY)
 
-	data, err := ioutil.ReadFile("./testdata/captcha.jpeg")
+	data, err := ioutil.ReadFile("./../testdata/captcha.jpeg")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
