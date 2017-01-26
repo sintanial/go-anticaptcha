@@ -9,8 +9,8 @@ import (
 	"encoding/base64"
 )
 
-const NumericNoNumbers = 1
-const NumericOnlyNumbers = 2
+const NumericOnlyNumbers = 1
+const NumericNoNumbers = 2
 
 type ImageToTextTask struct {
 	Phrase     bool `json:"phrase, omitempty"`
